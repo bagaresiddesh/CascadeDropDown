@@ -7,29 +7,58 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#ddCountry").change(function () {
+    $(document).ready(function () 
+    {
+        $("#ddCountry").change(function () 
+        {
             var CountryId = $(this).val();
-
             $.getJSON("../Address/LoadStateByCountryId", { CountryId: CountryId },
-                function (classesData) {
-                    var select = $("#ddState");
-                    select.empty();
+            function (classesData) 
+            {
+                var select = $("#ddState");
+                select.empty();
 
-                    select.append($('<option/>', {
-                        value: 0,
-                        text: "Select State"
+                select.append($('<option/>', 
+                {
+                    value: 0,
+                    text: "Select State"
+                }));
+
+                 $.each(classesData, function (index, itemData) 
+                 {
+                    select.append($('<option/>', 
+                    {
+                        value: itemData.value,
+                        text: itemData.text
                     }));
-
-                    $.each(classesData, function (index, itemData) {
-                        console.log(itemData);
-
-                        select.append($('<option/>', {
-                          value: itemData.value,
-                            text: itemData.text
-                        }));
-                    });
                 });
+            });
+        });
+
+        $("#ddState").change(function () 
+        {
+            var StateId = $(this).val();
+            $.getJSON("../Address/LoadCityByStateId", { StateId: StateId },
+            function (classesData) 
+            {
+                var select = $("#ddCity");
+                select.empty();
+
+                select.append($('<option/>', 
+                {
+                    value: 0,
+                    text: "Select City"
+                }));
+
+                 $.each(classesData, function (index, itemData) 
+                 {
+                    select.append($('<option/>', 
+                    {
+                        value: itemData.value,
+                        text: itemData.text
+                    }));
+                });
+            });
         });
     });
 </script>
@@ -38,13 +67,19 @@
 
 @using (Html.BeginForm("IndexPost", "Home", FormMethod.Post))
 {
-    <span style="margin-right: 5px;">
+    <span style="margin-right: 10px;">
         @Html.DropDownListFor(Model => Model.Country.Name, new SelectList(ViewBag.Country, "Id", "Name"),
             "Select Country", new { id = "ddCountry" })
     </span>
-    <span style="margin-right: 5px;">
+
+    <span style="margin-right: 10px;">
         @Html.DropDownListFor(Model => Model.State.Name, new SelectList(Enumerable.Empty<SelectListItem>(), "Id", "Name"),
             "Select State", new { id = "ddState" })
+    </span>
+
+    <span style="margin-right: 10px;">
+        @Html.DropDownListFor(Model => Model.City.Name, new SelectList(Enumerable.Empty<SelectListItem>(), "Id", "Name"),
+            "Select City", new { id = "ddCity" })
     </span>
 
     <input type="submit" value="Submit" class="btn btn-primary" />
